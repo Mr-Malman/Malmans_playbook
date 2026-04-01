@@ -1,4 +1,4 @@
-# Advanced Red Team & Malware Development Techniques 2026
+# Advanced Malware Development Techniques 2026
 
 ## Executive Summary
 
