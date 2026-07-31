@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 187 92% 42%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 11%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 160 84% 39%;
+
+    --radius: 0.6rem;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
+
+    --card: 222 44% 8%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 222 47% 7%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 158 84% 44%;
+    --primary-foreground: 222 47% 6%;
+
+    --secondary: 217 33% 14%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 217 33% 13%;
+    --muted-foreground: 215 20% 60%;
+
+    --accent: 187 92% 48%;
+    --accent-foreground: 222 47% 6%;
+
+    --destructive: 0 63% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 222 47% 6%;
+
+    --warning: 38 92% 55%;
+    --warning-foreground: 222 47% 6%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 158 84% 44%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  ::selection {
+    @apply bg-primary/30;
+  }
+}
+
+/* Grid + glow background for hero sections */
+.cyber-grid {
+  background-image:
+    linear-gradient(to right, hsl(var(--border) / 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--border) / 0.4) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+.glow-primary {
+  box-shadow: 0 0 40px -10px hsl(var(--primary) / 0.5);
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(
+    120deg,
+    hsl(var(--primary)),
+    hsl(var(--accent))
+  );
+}
+
+/* Custom scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-border;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------- MDX prose ---------- */
+.prose-playbook {
+  @apply text-[15px] leading-7 text-foreground/90;
+}
+.prose-playbook h1 {
+  @apply mb-4 mt-2 scroll-mt-24 text-3xl font-bold tracking-tight text-foreground;
+}
+.prose-playbook h2 {
+  @apply mb-3 mt-10 scroll-mt-24 border-b border-border pb-2 text-2xl font-semibold tracking-tight text-foreground;
+}
+.prose-playbook h3 {
+  @apply mb-2 mt-8 scroll-mt-24 text-xl font-semibold tracking-tight text-foreground;
+}
+.prose-playbook h4 {
+  @apply mb-2 mt-6 scroll-mt-24 text-lg font-semibold text-foreground;
+}
+.prose-playbook p {
+  @apply my-4;
+}
+.prose-playbook a {
+  @apply font-medium text-primary underline-offset-4 hover:underline;
+}
+.prose-playbook ul {
+  @apply my-4 ml-6 list-disc space-y-2 marker:text-primary;
+}
+.prose-playbook ol {
+  @apply my-4 ml-6 list-decimal space-y-2 marker:text-muted-foreground;
+}
+.prose-playbook li > ul,
+.prose-playbook li > ol {
+  @apply my-2;
+}
+.prose-playbook blockquote {
+  @apply my-6 border-l-2 border-primary/60 pl-4 italic text-muted-foreground;
+}
+.prose-playbook hr {
+  @apply my-8 border-border;
+}
+.prose-playbook strong {
+  @apply font-semibold text-foreground;
+}
+.prose-playbook table {
+  @apply my-6 w-full border-collapse overflow-hidden text-sm;
+}
+.prose-playbook thead {
+  @apply border-b border-border;
+}
+.prose-playbook th {
+  @apply px-4 py-2 text-left font-semibold text-foreground;
+}
+.prose-playbook td {
+  @apply border-t border-border px-4 py-2 align-top;
+}
+.prose-playbook tbody tr:hover {
+  @apply bg-muted/40;
+}
+
+/* inline code */
+.prose-playbook :not(pre) > code {
+  @apply rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-accent;
+}
+
+/* Anchor link icon on headings */
+.prose-playbook .heading-anchor {
+  @apply ml-2 text-muted-foreground opacity-0 transition-opacity;
+}
+.prose-playbook h2:hover .heading-anchor,
+.prose-playbook h3:hover .heading-anchor {
+  @apply opacity-100;
+}
+
+/* ---------- rehype-pretty-code ---------- */
+figure[data-rehype-pretty-code-figure] {
+  @apply my-6;
+}
+[data-rehype-pretty-code-figure] pre {
+  @apply overflow-x-auto rounded-lg border border-border bg-[#0b1120] py-4 text-[13px] leading-6 scrollbar-thin;
+}
+[data-rehype-pretty-code-figure] code {
+  @apply grid font-mono;
+  counter-reset: line;
+}
+[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  @apply mr-4 inline-block w-4 text-right text-muted-foreground/50;
+}
+[data-rehype-pretty-code-figure] [data-line] {
+  @apply border-l-2 border-transparent px-4;
+}
+[data-rehype-pretty-code-figure] [data-highlighted-line] {
+  @apply border-primary bg-primary/10;
+}
+[data-rehype-pretty-code-figure] [data-highlighted-chars] {
+  @apply rounded bg-accent/20;
+}
+[data-rehype-pretty-code-title] {
+  @apply rounded-t-lg border border-b-0 border-border bg-muted px-4 py-2 font-mono text-xs font-medium text-muted-foreground;
+}
+[data-rehype-pretty-code-title] + pre {
+  @apply mt-0 rounded-t-none;
+}
+
+/* React Flow theme fixes for dark mode */
+.react-flow__attribution {
+  @apply !bg-transparent text-[10px] opacity-40;
+}
