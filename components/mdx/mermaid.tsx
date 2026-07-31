@@ -16,11 +16,20 @@ let counter = 0;
 
 export function Mermaid({
   chart,
+  children,
   className,
 }: {
-  chart: string;
+  chart?: string;
+  children?: React.ReactNode;
   className?: string;
 }) {
+  const source =
+    chart ??
+    (typeof children === "string"
+      ? children
+      : Array.isArray(children)
+        ? children.join("")
+        : String(children ?? ""));
   const { resolvedTheme } = useTheme();
   const [svg, setSvg] = React.useState<string>("");
   const [error, setError] = React.useState<string>("");
@@ -42,7 +51,7 @@ export function Mermaid({
             lineColor: resolvedTheme === "dark" ? "#334155" : "#94a3b8",
           },
         });
-        const { svg } = await mermaid.render(id, chart.trim());
+        const { svg } = await mermaid.render(id, source.trim());
         if (active) {
           setSvg(svg);
           setError("");
@@ -54,7 +63,7 @@ export function Mermaid({
     return () => {
       active = false;
     };
-  }, [chart, resolvedTheme, id]);
+  }, [source, resolvedTheme, id]);
 
   if (error) {
     return (
