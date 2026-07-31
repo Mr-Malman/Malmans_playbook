@@ -34,8 +34,8 @@ export const mdxComponents = {
 
 // MDXRemote (rsc) is an async Server Component; cast to a plain FC so it
 // type-checks as JSX regardless of the ambient async-component typings.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const MDXRemoteRSC = MDXRemote as unknown as React.FC<any>;
+type AnyProps = Record<string, unknown>;
+const MDXRemoteRSC = MDXRemote as unknown as React.FC<AnyProps>;
 
 export function MdxContent({ source }: { source: string }) {
   return (

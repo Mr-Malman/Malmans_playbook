@@ -1,0 +1,12 @@
+{
+  "title": "Linux Privilege Escalation",
+  "description": "You have a shell — now what? Systematic enumeration and the classic local privilege-escalation paths on Linux: SUID binaries, sudo misconfigurations, and writable paths.",
+  "category": "Offensive Security",
+  "difficulty": "advanced",
+  "icon": "terminal",
+  "color": "rose",
+  "authors": ["Malman"],
+  "tags": ["linux", "privesc", "post-exploitation", "suid", "sudo"],
+  "featured": true,
+  "order": 2
+}

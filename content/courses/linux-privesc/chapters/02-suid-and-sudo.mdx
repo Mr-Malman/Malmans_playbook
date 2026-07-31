@@ -1,0 +1,90 @@
+---
+title: "SUID Binaries & Sudo Misconfigurations"
+description: "The two most reliable local privilege-escalation paths on Linux — abusing SUID-root binaries and permissive sudo rules — with the GTFOBins mindset."
+order: 2
+duration: 35
+difficulty: advanced
+tags: [suid, sudo, gtfobins]
+---
+
+Enumeration surfaced two categories worth their own chapter: **SUID binaries**
+that run as their owner regardless of who calls them, and **sudo rules** that let
+you run specific commands as another user. Both become root when the program in
+question can be coaxed into running arbitrary commands.
+
+## The escalation path
+
+<AttackPath
+  height={260}
+  steps={[
+    { id: "enum", phase: "Enum", type: "recon", label: "sudo -l / find -perm 4000", detail: "Inventory what runs elevated" },
+    { id: "match", phase: "Analyze", type: "entry", label: "Cross-ref GTFOBins", detail: "Does it have a shell escape?" },
+    { id: "escape", phase: "Exploit", type: "exploit", label: "Trigger shell escape", detail: "Run a command as root" },
+    { id: "root", phase: "Impact", type: "impact", label: "Root shell", detail: "uid=0" }
+  ]}
+/>
+
+## Abusing sudo rights
+
+`sudo -l` output is a to-do list. The question for each entry is always the same:
+*can this program run a command, spawn a shell, or write a file?* Many can, in
+ways their authors never intended.
+
+```bash
+# Suppose sudo -l shows: (root) NOPASSWD: /usr/bin/find
+sudo find . -exec /bin/sh \; -quit
+```
+
+<Alert variant="danger" title="Why this works">
+`find` is allowed to run as root, and `find -exec` runs an arbitrary program.
+The shell it spawns therefore runs as root. The vulnerability is not in `find` —
+it is in granting `find` elevated rights at all.
+</Alert>
+
+## Abusing SUID binaries
+
+A binary with the SUID bit set and owned by root always executes with root
+privileges. If that binary has any way to run a command, escalation follows.
+
+<LabStep n={1} title="Confirm the SUID bit and owner">
+An `-rwsr-xr-x root root` listing is the signal: the `s` in the owner-execute
+position plus root ownership means it runs as root for everyone.
+</LabStep>
+
+<LabStep n={2} title="Look it up in GTFOBins">
+GTFOBins catalogs the shell escape for common binaries. If your SUID binary is
+listed with a `SUID` section, the escape is a copy-paste away.
+</LabStep>
+
+<PayloadBox label="Classic SUID escape (env preserved)" language="bash">
+# If /usr/bin/env is SUID-root
+./env /bin/sh -p
+</PayloadBox>
+
+The `-p` matters: it stops the shell from dropping the elevated privileges on
+startup, which is exactly the mistake that would otherwise hand you a useless
+non-root shell.
+
+## Path hijacking
+
+When a SUID binary calls another program **without an absolute path**, you
+control which binary it finds by rewriting `PATH`:
+
+```bash
+# The SUID program runs `service` without a full path.
+cd /tmp
+echo '/bin/sh -p' > service
+chmod +x service
+export PATH=/tmp:$PATH
+/opt/vuln-suid-binary          # runs our fake `service` as root
+```
+
+<DefenseNote title="Closing these paths">
+- Audit and **remove unnecessary SUID/SGID bits** — most binaries never need them.
+- Write `sudoers` rules against the *task*, not a general-purpose binary; avoid
+  entries for `find`, `vim`, `awk`, `env`, and anything with a shell escape.
+- Always call programs by **absolute path** in privileged scripts and reset
+  `PATH` at the top. Prefer `secure_path` in `sudoers`.
+- Monitor for `uid=0` shells spawned by non-login binaries — that pattern is the
+  escalation itself, caught in the act.
+</DefenseNote>
